@@ -3,15 +3,15 @@ util.AddNetworkString("shl_endround")
 util.AddNetworkString("shl_startround")
 util.AddNetworkString("shl_warmupstart")
 util.AddNetworkString("shl_waitingplayers")
-SLASHERS.IsRoundActive = false;
-SLASHERS.IsRoundBreak = false;
+SLASHERS.IsRoundActive = SLASHERS.IsRoundActive or false;
+SLASHERS.IsRoundBreak = SLASHERS.IsRoundActive or false;
 SLASHERS[game.GetMap()] = SLASHERS[game.GetMap()] or {};
 SLASHERS.ROUND = {}
 local ROUND = SLASHERS.ROUND
 ROUND.ActualNumber = 0;
-ROUND.BreakTime = 3;
+ROUND.BreakTime = 1;
 ROUND.PlayTime = 5 * 60;
-ROUND.StatShowTime = 3
+ROUND.StatShowTime = 1
 
 --[[
 **** Etapes : 
@@ -121,10 +121,9 @@ function GM:PlayerSpawn(Player)
 end
 
 function GM:PlayerDK(ply, reason) -- Disconnect Killed 
-
+	print("died lool",SLASHERS.IsRoundActive, ply:Team() )
 	if not SLASHERS.IsRoundActive then return end
 	if #ROUND.Survivors == 0 or (not ROUND.Survivors) then
-		print("end")
 		ROUND.End(1)
 		return;
 	end

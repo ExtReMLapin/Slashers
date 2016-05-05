@@ -61,8 +61,7 @@ SLASHERS.Survivors[CLASS_TYRONE].life = 100
 SLASHERS.Survivors[CLASS_TYRONE].stamina = 120;
 
 local tmptbl1 = {CLASS_FLASH, CLASS_NICK, CLASS_KIMBERLY, CLASS_SAM, CLASS_GARRY, CLASS_TYRONE}
-local tmptbl2 = table.Copy(tmptbl2)
-
+local tmptbl2 = table.Copy(tmptbl1)
 
 function metaplayer:SetClass(n)
 		self:SetWalkSpeed(SLASHERS.Survivors[n].walkspeed)
@@ -86,7 +85,7 @@ function SLASHERS.SetUpClasses(killer)
 		tmptbl2[n] = nil
 	end
 
-	killer:SetMaxHealth(SLASHERS.Survivors[n].life)
+	killer:SetMaxHealth(100)
 	killer:SetNWInt("MaxHealth",100)
 	killer:SetNWInt("MaxStamina",150)
 	killer:SetNWInt("ClassID",0)

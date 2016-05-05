@@ -1,5 +1,6 @@
 include("shared.lua");
 include("sv_rounds.lua");
+include("server/class.lua")
 AddCSLuaFile("cl_init.lua");
 AddCSLuaFile("shared.lua");
 AddCSLuaFile("client/hidden.lua");
@@ -15,7 +16,6 @@ end
 
 function GM:PlayerDisconnected( ply )
 	self:PlayerDK(ply, 1)
-
 end
 
 function GM:PlayerDeath(ply, inflictor, attacker_ent)
