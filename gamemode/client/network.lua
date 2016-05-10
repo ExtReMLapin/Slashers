@@ -1,16 +1,21 @@
 net.Receive("shl_startround",function ()
 	render.RedownloadAllLightmaps()
-	LocalPlayer():ChatPrint("Start of round")
+	print("Start of round")
 end)
 
 net.Receive("shl_endround",function ()
-	LocalPlayer():ChatPrint("End of round")
+	print("End of round")
 end)
 
 net.Receive("shl_warmupstart",function ()
-	LocalPlayer():ChatPrint("Warmup start")
+	print("Warmup start")
 end)
 
 net.Receive("shl_waitingplayers",function ()
-	LocalPlayer():ChatPrint("Waiting for players")
+	print("Waiting for players")
+end)
+
+
+net.Receive("shl_firstspawn",function()
+	render.RedownloadAllLightmaps()
 end)

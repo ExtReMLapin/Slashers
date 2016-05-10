@@ -64,6 +64,7 @@ local tmptbl1 = {CLASS_FLASH, CLASS_NICK, CLASS_KIMBERLY, CLASS_SAM, CLASS_GARRY
 local tmptbl2 = table.Copy(tmptbl1)
 
 function metaplayer:SetClass(n)
+		print(Format("Player %s is set to class %s", self:Nick(), SLASHERS.Survivors[n].name))
 		self:SetWalkSpeed(SLASHERS.Survivors[n].walkspeed)
 		self:SetRunSpeed(SLASHERS.Survivors[n].runspeed)
 		self:SetMaxHealth(SLASHERS.Survivors[n].life)
@@ -75,6 +76,8 @@ end
 
 
 function SLASHERS.SetUpClasses(killer)
+	print(2)
+	PrintTable(SLASHERS.ROUND.Survivors)
 	for k,ply in pairs(SLASHERS.ROUND.Survivors) do
 		if #tmptbl2 == 0 or not tmptbl2 then 
 			ply:SetClass(math.random(#tmptbl1))
