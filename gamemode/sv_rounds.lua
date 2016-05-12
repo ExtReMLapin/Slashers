@@ -22,7 +22,7 @@ function SLASHERS.ROUND.Start()
 	SLASHERS.ROUND.Survivors = table.Copy(player.GetAll()) -- detour security
 	SLASHERS.IsRoundActive = true;
 	SLASHERS.ROUND.ActualNumber = SLASHERS.ROUND.ActualNumber + 1;
-	local idklr = math.random(#SLASHERS.ROUND.Survivors) -- id killer
+	local idklr = math.random(table.Count(SLASHERS.ROUND.Survivors)) -- id killer
 	local Killer = SLASHERS.ROUND.Survivors[idklr]
 	SLASHERS.ROUND.Survivors[idklr] = nil;
 	local Spawnpoints = ents.FindByClass("info_player_counterterrorist");
@@ -47,7 +47,7 @@ function SLASHERS.ROUND.Start()
 		Killer:SetNoCollideWithTeammates(false);
 		Killer:SetPos(table.Random(ents.FindByClass("info_player_terrorist")):GetPos());
 	end
-	timer.Create("Round Playtime", (#SLASHERS.ROUND.Survivors)*60, 1, function() SLASHERS.ROUND.End(2) end );
+	timer.Create("Round Playtime", (table.Count(SLASHERS.ROUND.Survivors))*60, 1, function() SLASHERS.ROUND.End(2) end );
 	game.CleanUpMap(false);
 	print(1)
 	PrintTable(SLASHERS.ROUND.Survivors)
@@ -79,7 +79,7 @@ function SLASHERS.ROUND.NewRound()
 		net.Start("shl_warmupstart")
 		net.Broadcast()
 		timer.Simple(SLASHERS.ROUND.BreakTime, function()
-			if #player.GetAll() >= 3 then
+			if table.Count(player.GetAll()) >= 3 then
 				SLASHERS.IsRoundBreak = false;
 				print("sent")
 				engine.LightStyle(0,"b")
@@ -94,7 +94,7 @@ function SLASHERS.ROUND.NewRound()
 				net.Start("shl_waitingplayers")
 				net.Broadcast()
 				timer.Create("WaitForPlayer", 1, 0, function()
-					if #player.GetAll() >= 3 then
+					if table.Count(player.GetAll()) >= 3 then
 						SLASHERS.IsRoundBreak = false;
 						print("sent")
 						engine.LightStyle(0,"b")
@@ -118,7 +118,7 @@ function GM:PlayerSpawn(Player)
 	end
 	Player:SetupHands();
 	if SLASHERS.IsRoundActive == false and SLASHERS.IsRoundBreak == false then
-		if #player.GetAll() >= 3 then
+		if table.Count(player.GetAll()) >= 3 then
 			SLASHERS.ROUND.NewRound()
 		else
 			print("No enough players")
