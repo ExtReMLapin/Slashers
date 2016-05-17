@@ -1,5 +1,5 @@
 GM.Name = "Slashers";
-GM.Author = "Skeleton (GLaDOS) & [ExtReM] Lapin";
+GM.Author = "[ExtReM] Lapin";
 SLASHERS = {};
 
 TEAM_KILLER = 1;

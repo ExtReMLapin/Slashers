@@ -1,0 +1,6 @@
+"VertexLitGeneric"
+{
+	// Original shader: VertexLitTexture
+	"$basetexture" "Models/player/ssgabe/kanisha_facemap"
+	"$halflambert" 1
+}

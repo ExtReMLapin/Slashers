@@ -26,6 +26,7 @@ SLASHERS.Survivors[CLASS_NICK].walkspeed = 160
 SLASHERS.Survivors[CLASS_NICK].runspeed = 215
 SLASHERS.Survivors[CLASS_NICK].life = 80
 SLASHERS.Survivors[CLASS_NICK].stamina = 60;
+SLASHERS.Survivors[CLASS_NICK].model = "models/h-d/2sg/simonplayer.mdl"
 
 SLASHERS.Survivors[CLASS_KIMBERLY] = {}
 SLASHERS.Survivors[CLASS_KIMBERLY].name = "Kimberly"
@@ -42,6 +43,7 @@ SLASHERS.Survivors[CLASS_GARRY].walkspeed = 100
 SLASHERS.Survivors[CLASS_GARRY].runspeed = 150
 SLASHERS.Survivors[CLASS_GARRY].life = 150
 SLASHERS.Survivors[CLASS_GARRY].stamina = 100;
+SLASHERS.Survivors[CLASS_GARRY].model = "models/gaben/gabe_3.mdl"
 
 
 SLASHERS.Survivors[CLASS_SAM] = {}
@@ -51,6 +53,7 @@ SLASHERS.Survivors[CLASS_SAM].walkspeed = 170
 SLASHERS.Survivors[CLASS_SAM].runspeed = 220
 SLASHERS.Survivors[CLASS_SAM].life = 50
 SLASHERS.Survivors[CLASS_SAM].stamina = 120;
+SLASHERS.Survivors[CLASS_SAM].model = "models/player/ow_tracer.mdl"
 
 SLASHERS.Survivors[CLASS_TYRONE] = {}
 SLASHERS.Survivors[CLASS_TYRONE].name = "Tyrone"
@@ -59,8 +62,9 @@ SLASHERS.Survivors[CLASS_TYRONE].walkspeed = 150
 SLASHERS.Survivors[CLASS_TYRONE].runspeed = 240
 SLASHERS.Survivors[CLASS_TYRONE].life = 100
 SLASHERS.Survivors[CLASS_TYRONE].stamina = 120;
+SLASHERS.Survivors[CLASS_TYRONE].model = "models/player/cj.mdl"
 
-local tmptbl1 = {CLASS_FLASH, CLASS_NICK, CLASS_KIMBERLY, CLASS_SAM, CLASS_GARRY, CLASS_TYRONE}
+local tmptbl1 = {CLASS_FLASH, CLASS_NICK, CLASS_KIMBERLY, CLASS_GARRY, CLASS_SAM, CLASS_TYRONE}
 local tmptbl2 = table.Copy(tmptbl1)
 
 function metaplayer:SetClass(n)
@@ -71,20 +75,26 @@ function metaplayer:SetClass(n)
 		self:SetNWInt("MaxHealth",SLASHERS.Survivors[n].life)
 		self:SetNWInt("MaxStamina",SLASHERS.Survivors[n].stamina)
 		self:SetNWInt("ClassID",n)
-		self:SetModel("models/player/eli.mdl")
+		if SLASHERS.Survivors[n].model then 
+			self:SetModel(SLASHERS.Survivors[n].model)
+		else
+			self:SetModel("models/player/eli.mdl")
+		end
 end
 
 
 function SLASHERS.SetUpClasses(killer)
-	print(2)
-	PrintTable(SLASHERS.ROUND.Survivors)
+	tmptbl2 = table.Copy(tmptbl1)
 	for k,ply in pairs(SLASHERS.ROUND.Survivors) do
-		if #tmptbl2 == 0 or not tmptbl2 then 
-			ply:SetClass(math.random(#tmptbl1))
+		PrintTable(tmptbl2)
+		if #tmptbl2 == 0 or not tmptbl2 then
+			print("max classes") 
+			ply:SetClass(table.Random(tmptbl1))
 			return
 		end
 		local n = table.Random(tmptbl2)
-		ply:SetClass(n, false)
+
+		ply:SetClass(n)
 		tmptbl2[n] = nil
 	end
 

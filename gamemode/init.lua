@@ -1,14 +1,18 @@
+DEFINE_BASECLASS( "gamemode_base" )
 include("shared.lua");
 include("sv_rounds.lua");
 include("server/class.lua")
 include("server/light.lua")
+include("server/handledoors.lua")
 AddCSLuaFile("cl_init.lua");
 AddCSLuaFile("shared.lua");
 AddCSLuaFile("client/hidden.lua");
 AddCSLuaFile("client/postprocess.lua");
 AddCSLuaFile("client/network.lua");
 util.AddNetworkString("shl_firstspawn")
+util.AddNetworkString("shl_flashlight")
 
+GAME_LUM = "f"
 
 pjs = pjs or {};
 
@@ -17,8 +21,7 @@ function GM:CanPlayerSuicide()
 end
 
 function GM:Initialize()
-	engine.LightStyle(0,"b")
-	timer.Simple(0,function()engine.LightStyle(0,"b")end)
+	timer.Simple(0,function()engine.LightStyle(0,GAME_LUM)end)
 end
 
 function GM:PlayerDisconnected( ply )
@@ -42,16 +45,21 @@ function GM:PlayerInitialSpawn(ply)
 	net.Send(ply)
 end
 
+function GM:EntityTakeDamage( ent, info )
+
+end
+
 
 function GM:PlayerSwitchFlashlight( ply, state )
 	if !ply:Alive() then return end
 	if !pjs[ ply ] then
-		TPF_SetupProjectedTexture( ply );
+		SetupProjectedTexture( ply );
 	else
-		TPF_RemoveProjectedTexture( ply );
+		RemoveProjectedTexture( ply );
 	end
-	if !ply.m_bTPFDisabled then
-		ply:SendLua( "surface.PlaySound( 'items/flashlight1.wav' )" );
+	if !ply.m_bFLDisabled then
+		net.Start("shl_flashlight")
+		net.Send(ply)
 	end
 end 
 

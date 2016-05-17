@@ -19,3 +19,18 @@ end)
 net.Receive("shl_firstspawn",function()
 	render.RedownloadAllLightmaps()
 end)
+
+net.Receive("shl_flashlight",function()
+	local pjs = LocalPlayer():GetNWEntity( 'TPF_Flashlight' )
+	if IsValid( pjs ) then
+		if IsValid(LocalPlayer():GetActiveWeapon()) and LocalPlayer():GetActiveWeapon():GetClass() == "weapon_flashlight" then
+			local bid = LocalPlayer():GetViewModel():LookupBone( "Maglite" )
+			local bp, ba = LocalPlayer():GetViewModel():GetBonePosition( bid )
+			ba:RotateAroundAxis(ba:Up(), -90)
+			pjs:SetPos( bp +ba:Forward() * -3.5 );
+			pjs:SetAngles( ba );
+			pjs:SetParent(LocalPlayer():GetViewModel(), LocalPlayer():GetViewModel():LookupAttachment("light"))
+			print(42)
+		end
+	end
+end)

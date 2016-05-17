@@ -12,12 +12,6 @@ SLASHERS.ROUND.BreakTime = 1;
 SLASHERS.ROUND.PlayTime = 5 * 60;
 SLASHERS.ROUND.StatShowTime = 1
 
---[[
-**** Etapes : 
-****	1 : Warmup ; 2 : Game 3 : Endgame où on show les stats 4 : Re-warmup etc...
---]]
-
-
 function SLASHERS.ROUND.Start()
 	SLASHERS.ROUND.Survivors = table.Copy(player.GetAll()) -- detour security
 	SLASHERS.IsRoundActive = true;
@@ -33,7 +27,7 @@ function SLASHERS.ROUND.Start()
 			Player:Spawn();
 			Player:Give("weapon_flashlight");
 			Player:AllowFlashlight( true)
-			Player.m_bTPFDisabled = false;
+			Player.m_bFLDisabled = false;
 			Player:SetNoCollideWithTeammates(true);
 			Player:SetPos(table.Random(Spawnpoints):GetPos());
 		end
@@ -42,20 +36,21 @@ function SLASHERS.ROUND.Start()
 		Killer:KillSilent(); 
 		Killer:SetTeam(TEAM_KILLER);
 		Killer:Spawn();
-		Killer.m_bTPFDisabled = true
+		Killer.m_bFLDisabled = true
 		Killer:Give(SLASHERS[game.GetMap()].Weapon or "tfa_nmrih_machete");
 		Killer:SetNoCollideWithTeammates(false);
 		Killer:SetPos(table.Random(ents.FindByClass("info_player_terrorist")):GetPos());
 	end
 	timer.Create("Round Playtime", (table.Count(SLASHERS.ROUND.Survivors))*60, 1, function() SLASHERS.ROUND.End(2) end );
 	game.CleanUpMap(false);
-	print(1)
-	PrintTable(SLASHERS.ROUND.Survivors)
+
 	SLASHERS.SetUpClasses(Killer)
+	SLASHERS.handledoors()
 	-- TODO : add random inv
 end
 
 function SLASHERS.ROUND.End(EndReason) --  all survivors are dead,no more time, killer left
+	timer.Remove("Round Playtime");
 	SLASHERS.ROUND.Survivors = {}
 	SLASHERS.IsRoundActive = false;
 	SLASHERS.IsRoundBreak = 1;
@@ -82,7 +77,7 @@ function SLASHERS.ROUND.NewRound()
 			if table.Count(player.GetAll()) >= 3 then
 				SLASHERS.IsRoundBreak = false;
 				print("sent")
-				engine.LightStyle(0,"b")
+				engine.LightStyle(0,GAME_LUM)
 				timer.Simple(0.1,function()
 					net.Start("shl_startround")
 					net.Broadcast()
@@ -97,11 +92,13 @@ function SLASHERS.ROUND.NewRound()
 					if table.Count(player.GetAll()) >= 3 then
 						SLASHERS.IsRoundBreak = false;
 						print("sent")
-						engine.LightStyle(0,"b")
+						engine.LightStyle(0,GAME_LUM)
+						timer.Remove("WaitForPlayer")
 						timer.Simple(0.1,function()
 							net.Start("shl_startround")
 							net.Broadcast()
 							SLASHERS.ROUND.Start()
+
 						end)
 						return
 					end
@@ -140,14 +137,11 @@ function GM:PlayerDK(ply, reason) -- Disconnect Killed
 		end
 	else
 		SLASHERS.ROUND.End(3);
-		timer.Remove("Round Playtime");
 	end
 	print("left survivors", table.Count(SLASHERS.ROUND.Survivors))
 	if table.Count(SLASHERS.ROUND.Survivors) == 0 then
-		print("no more survivirs")
+		print("no more survivors")
 		SLASHERS.ROUND.End(1)
-		return;
+		return
 	end
-
-
 end
