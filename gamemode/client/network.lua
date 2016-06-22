@@ -21,7 +21,7 @@ net.Receive("shl_firstspawn",function()
 end)
 
 net.Receive("shl_flashlight",function()
-	local pjs = LocalPlayer():GetNWEntity( 'TPF_Flashlight' )
+	local pjs = LocalPlayer():GetNWEntity( 'FL_Flashlight' )
 	if IsValid( pjs ) then
 		if IsValid(LocalPlayer():GetActiveWeapon()) and LocalPlayer():GetActiveWeapon():GetClass() == "weapon_flashlight" then
 			local bid = LocalPlayer():GetViewModel():LookupBone( "Maglite" )
