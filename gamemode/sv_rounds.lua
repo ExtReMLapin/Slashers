@@ -41,7 +41,7 @@ function SLASHERS.ROUND.Start()
 		Killer:SetNoCollideWithTeammates(false);
 		Killer:SetPos(table.Random(ents.FindByClass("info_player_terrorist")):GetPos());
 	end
-	timer.Create("Round Playtime", (table.Count(SLASHERS.ROUND.Survivors))*60, 1, function() SLASHERS.ROUND.End(2) end );
+	timer.Create("Round Playtime", (table.Count(SLASHERS.ROUND.Survivors))*600, 1, function() SLASHERS.ROUND.End(2) end );
 	game.CleanUpMap(false);
 
 	SLASHERS.SetUpClasses(Killer)
@@ -126,7 +126,10 @@ function GM:PlayerSpawn(Player)
 
 end
 
-function GM:PlayerDK(ply, reason) -- Disconnect Killed 
+function GM:PlayerDK(ply, reason) -- Disconnect Killed
+	if !ply:Alive() and pjs[ ply ] then RemoveProjectedTexture( ply ); end
+	ply:AllowFlashlight( false )
+
 	if not SLASHERS.IsRoundActive then print("not active") return end
 	if ply:Team() == TEAM_SURVIVORS then
 		for k, v in pairs(SLASHERS.ROUND.Survivors) do

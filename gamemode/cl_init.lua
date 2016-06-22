@@ -6,10 +6,13 @@ function GM:Think()
 	self:DarkThink()
 end
 
-local hidethings = { -- Yeah, i know its from original Gmod wiki , what do you think you think i will use something else ? Dont be dumb.
-	["CHudHealth"] = true,
-	["CHudBattery"] = true,
-	["CHudAmmo"] = true,
-	["CHudSecondaryAmmo"] = true
+local hide = {
+	CHudHealth = true,
+	CHudBattery = true,
 }
 
+hook.Add( "HUDShouldDraw", "HideHUD", function( name )
+	if ( hide[ name ] ) then return false end
+
+	-- Don't return anything here, it may break other addons that rely on this hook.
+end )

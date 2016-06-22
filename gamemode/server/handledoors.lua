@@ -1,5 +1,7 @@
 local ENT = FindMetaTable("Entity")
 
+util.AddNetworkString("shl_entityupdate")
+
 
 
 
@@ -8,8 +10,13 @@ local ENT = FindMetaTable("Entity")
 function ENT:WoodenDoorInitialize()
 	self.life = 500
 	self.cent = math.floor(self.life/100)
+	--self:PhysicsInit(SOLID_VPHYSICS)
 end
 
+function ENT:MetalDoorInitialize()
+	self.life = 800
+	self.cent = math.floor(self.life/100)
+end
 
 
 function ENT:WoodenDoorState1(vec)
@@ -23,27 +30,35 @@ function ENT:WoodenDoorState1(vec)
 	enttemp1:SetModel("models/props_doors/doormain_rural04_small_01.mdl")
 	enttemp1:SetAngles(ang)
 	enttemp1:SetPos(self:GetPos() )
+	enttemp1:SetCollisionGroup(COLLISION_GROUP_DEBRIS)
 	enttemp1:Spawn()
 	enttemp1:GetPhysicsObject():SetVelocity(vec*200)
 	constraint.NoCollide(enttemp1, self, 0, 0)
+
 	enttemp2:SetModel("models/props_doors/doormain_rural04_small_02.mdl")
 	enttemp2:SetAngles(ang)
 	enttemp2:SetPos(self:GetPos() )
+	enttemp2:SetCollisionGroup(COLLISION_GROUP_DEBRIS)
 	enttemp2:Spawn()
 	enttemp2:GetPhysicsObject():SetVelocity(vec*200)
 	constraint.NoCollide(enttemp2, self, 0, 0)
+
 	enttemp3:SetModel("models/props_doors/doormain_rural04_small_03.mdl")
 	enttemp3:SetAngles(ang)
 	enttemp3:SetPos(self:GetPos() )
+	enttemp3:SetCollisionGroup(COLLISION_GROUP_DEBRIS)
 	enttemp3:Spawn()
 	enttemp3:GetPhysicsObject():SetVelocity(vec*200)
 	constraint.NoCollide(enttemp3, self, 0, 0)
+
 	enttemp4:SetModel("models/props_doors/doormain_rural04_small_04.mdl")
 	enttemp4:SetAngles(ang)
 	enttemp4:SetPos(self:GetPos() )
+	enttemp4:SetCollisionGroup(COLLISION_GROUP_DEBRIS)
 	enttemp4:Spawn()
 	enttemp4:GetPhysicsObject():SetVelocity(vec*200)
 	constraint.NoCollide(enttemp4, self, 0, 0)
+
 	timer.Simple(12, 
 		function() 
 			if IsValid(enttemp1) then enttemp1:Remove() end
@@ -64,6 +79,7 @@ function ENT:WoodenDoorState2(vec)
 	enttemp1:SetModel("models/props_doors/doormain_rural03_small_02.mdl")
 	enttemp1:SetAngles(ang)
 	enttemp1:SetPos(self:GetPos() )
+	enttemp1:SetCollisionGroup(COLLISION_GROUP_DEBRIS)
 	enttemp1:Spawn()
 	enttemp1:GetPhysicsObject():SetVelocity(vec*200)
 	constraint.NoCollide(enttemp1, self, 0, 0)
@@ -71,6 +87,7 @@ function ENT:WoodenDoorState2(vec)
 	enttemp2:SetModel("models/props_doors/doormain_rural03_small_03.mdl")
 	enttemp2:SetAngles(ang)
 	enttemp2:SetPos(self:GetPos() )
+	enttemp2:SetCollisionGroup(COLLISION_GROUP_DEBRIS)
 	enttemp2:Spawn()
 	enttemp2:GetPhysicsObject():SetVelocity(vec*200)
 	constraint.NoCollide(enttemp2, self, 0, 0)
@@ -87,6 +104,7 @@ function ENT:WoodenDoorState3(vec)
 	enttemp1:SetModel("models/props_doors/doormain_rural02_small_02.mdl")
 	enttemp1:SetAngles(ang)
 	enttemp1:SetPos(self:GetPos() )
+	enttemp1:SetCollisionGroup(COLLISION_GROUP_DEBRIS)
 	enttemp1:Spawn()
 	enttemp1:GetPhysicsObject():SetVelocity(vec*200)
 	constraint.NoCollide(enttemp1, self, 0, 0)
@@ -94,6 +112,7 @@ function ENT:WoodenDoorState3(vec)
 	enttemp2:SetModel("models/props_doors/doormain_rural02_small_03.mdl")
 	enttemp2:SetAngles(ang)
 	enttemp2:SetPos(self:GetPos() )
+	enttemp2:SetCollisionGroup(COLLISION_GROUP_DEBRIS)
 	enttemp2:Spawn()
 	enttemp2:GetPhysicsObject():SetVelocity(vec*200)
 	constraint.NoCollide(enttemp2, self, 0, 0)
@@ -107,33 +126,20 @@ function ENT:WoodenDoorState4(vec)
 	local enttemp = ents.Create( "prop_physics_multiplayer" )
 	local ang = self:GetAngles()
 	self:SetModel("models/props_doors/doormain_rural01_small_01.mdl")
-	
+	self:PhysicsInitConvex(wood1)
+	self:EnableCustomCollisions(true)
 	enttemp:SetModel("models/props_doors/doormain_rural01_small_02.mdl")
 	enttemp:SetAngles(ang)
 	enttemp:SetPos(self:GetPos() )
+	enttemp:SetCollisionGroup(COLLISION_GROUP_DEBRIS)
 	enttemp:Spawn()
 	enttemp:GetPhysicsObject():SetVelocity(vec*200)
 	constraint.NoCollide(enttemp, self, 0, 0)
 	timer.Simple(6, function() if IsValid(enttemp) then enttemp:Remove() end end)
 end
 
-function ENT:WoodenDoorOnTakeDamage(damage ) 
-	local damageAmount = damage:GetDamage()
-	self.life = self.life - damageAmount
-	local vec;
-	if IsValid(damage:GetAttacker()) and damage:GetAttacker():IsPlayer() then
-		vec = damage:GetAttacker():GetAimVector()
-	else
-		vec = Vector(0,0,0)
-	end
-	if self.cent > math.floor(self.life/100) then
-		self.cent = math.floor(self.life/100)
-		if self.cent == 3 then self:WoodenDoorState4(vec) end
-		if self.cent == 2 then self:WoodenDoorState3(vec) end
-		if self.cent == 1 then self:WoodenDoorState2(vec) end
-		if self.life < 50 then self:WoodenDoorState1(vec) end
-	end
-end
+
+
 
 function ENT:MetalDoorState8(vec)
 	self:SetModel("models/props_doors/doormainmetal01_dm01.mdl")
@@ -152,6 +158,7 @@ function ENT:MetalDoorState6(vec)
 	enttemp1:SetModel("models/props_doors/doormainmetal01_dm03_a.mdl")
 	enttemp1:SetAngles(ang)
 	enttemp1:SetPos(self:GetPos() )
+	enttemp1:SetCollisionGroup(COLLISION_GROUP_DEBRIS)
 	enttemp1:Spawn()
 	enttemp1:GetPhysicsObject():SetVelocity(vec*200)
 	constraint.NoCollide(enttemp1, self, 0, 0)
@@ -159,6 +166,7 @@ function ENT:MetalDoorState6(vec)
 	enttemp2:SetModel("models/props_doors/doormainmetal01_dm03_b.mdl")
 	enttemp2:SetAngles(ang)
 	enttemp2:SetPos(self:GetPos() )
+	enttemp2:SetCollisionGroup(COLLISION_GROUP_DEBRIS)
 	enttemp2:Spawn()
 	enttemp2:GetPhysicsObject():SetVelocity(vec*200)
 	constraint.NoCollide(enttemp2, self, 0, 0)
@@ -178,6 +186,7 @@ function ENT:MetalDoorState4(vec)
 	enttemp1:SetModel("models/props_doors/doormainmetal01_dm05_a.mdl")
 	enttemp1:SetAngles(ang)
 	enttemp1:SetPos(self:GetPos() )
+	enttemp1:SetCollisionGroup(COLLISION_GROUP_DEBRIS)
 	enttemp1:Spawn()
 	enttemp1:GetPhysicsObject():SetVelocity(vec*200)
 	constraint.NoCollide(enttemp1, self, 0, 0)
@@ -185,6 +194,7 @@ function ENT:MetalDoorState4(vec)
 	enttemp2:SetModel("models/props_doors/doormainmetal01_dm05_b.mdl")
 	enttemp2:SetAngles(ang)
 	enttemp2:SetPos(self:GetPos() )
+	enttemp2:SetCollisionGroup(COLLISION_GROUP_DEBRIS)
 	enttemp2:Spawn()
 	enttemp2:GetPhysicsObject():SetVelocity(vec*200)
 	constraint.NoCollide(enttemp2, self, 0, 0)
@@ -201,6 +211,7 @@ function ENT:MetalDoorState3(vec)
 	enttemp1:SetModel("models/props_doors/doormainmetal01_dm06_a.mdl")
 	enttemp1:SetAngles(ang)
 	enttemp1:SetPos(self:GetPos() )
+	enttemp1:SetCollisionGroup(COLLISION_GROUP_DEBRIS)
 	enttemp1:Spawn()
 	enttemp1:GetPhysicsObject():SetVelocity(vec*200)
 	constraint.NoCollide(enttemp1, self, 0, 0)
@@ -208,6 +219,7 @@ function ENT:MetalDoorState3(vec)
 	enttemp2:SetModel("models/props_doors/doormainmetal01_dm06_b.mdl")
 	enttemp2:SetAngles(ang)
 	enttemp2:SetPos(self:GetPos() )
+	enttemp2:SetCollisionGroup(COLLISION_GROUP_DEBRIS)
 	enttemp2:Spawn()
 	enttemp2:GetPhysicsObject():SetVelocity(vec*200)
 	constraint.NoCollide(enttemp2, self, 0, 0)
@@ -224,6 +236,7 @@ function ENT:MetalDoorState2(vec)
 	enttemp1:SetModel("models/props_doors/doormainmetal01_dm07_a.mdl")
 	enttemp1:SetAngles(ang)
 	enttemp1:SetPos(self:GetPos() )
+	enttemp1:SetCollisionGroup(COLLISION_GROUP_DEBRIS)
 	enttemp1:Spawn()
 	enttemp1:GetPhysicsObject():SetVelocity(vec*200)
 	constraint.NoCollide(enttemp1, self, 0, 0)
@@ -231,6 +244,7 @@ function ENT:MetalDoorState2(vec)
 	enttemp2:SetModel("models/props_doors/doormainmetal01_dm07_b.mdl")
 	enttemp2:SetAngles(ang)
 	enttemp2:SetPos(self:GetPos() )
+	enttemp2:SetCollisionGroup(COLLISION_GROUP_DEBRIS)
 	enttemp2:Spawn()
 	enttemp2:GetPhysicsObject():SetVelocity(vec*200)
 	constraint.NoCollide(enttemp2, self, 0, 0)
@@ -253,48 +267,56 @@ function ENT:MetalDoorState1(vec)
 	enttemp1:SetModel("models/props_doors/doormainmetal01_dm08_a.mdl")
 	enttemp1:SetAngles(ang)
 	enttemp1:SetPos(self:GetPos() )
+	enttemp1:SetCollisionGroup(COLLISION_GROUP_DEBRIS)
 	enttemp1:Spawn()
 	enttemp1:GetPhysicsObject():SetVelocity(vec*200)
 	constraint.NoCollide(enttemp1, self, 0, 0)
 	enttemp2:SetModel("models/props_doors/doormainmetal01_dm08_a.mdl")
 	enttemp2:SetAngles(ang)
 	enttemp2:SetPos(self:GetPos() )
+	enttemp2:SetCollisionGroup(COLLISION_GROUP_DEBRIS)
 	enttemp2:Spawn()
 	enttemp2:GetPhysicsObject():SetVelocity(vec*200)
 	constraint.NoCollide(enttemp2, self, 0, 0)
 	enttemp3:SetModel("models/props_doors/doormainmetal01_dm08_b.mdl")
 	enttemp3:SetAngles(ang)
 	enttemp3:SetPos(self:GetPos() )
+	enttemp3:SetCollisionGroup(COLLISION_GROUP_DEBRIS)
 	enttemp3:Spawn()
 	enttemp3:GetPhysicsObject():SetVelocity(vec*200)
 	constraint.NoCollide(enttemp3, self, 0, 0)
 	enttemp4:SetModel("models/props_doors/doormainmetal01_dm08_c.mdl")
 	enttemp4:SetAngles(ang)
 	enttemp4:SetPos(self:GetPos() )
+	enttemp4:SetCollisionGroup(COLLISION_GROUP_DEBRIS)
 	enttemp4:Spawn()
 	enttemp4:GetPhysicsObject():SetVelocity(vec*200)
 	constraint.NoCollide(enttemp4, self, 0, 0)
 	enttemp5:SetModel("models/props_doors/doormainmetal01_dm08_d.mdl")
 	enttemp5:SetAngles(ang)
 	enttemp5:SetPos(self:GetPos() )
+	enttemp5:SetCollisionGroup(COLLISION_GROUP_DEBRIS)
 	enttemp5:Spawn()
 	enttemp5:GetPhysicsObject():SetVelocity(vec*200)
 	constraint.NoCollide(enttemp5, self, 0, 0)
 	enttemp6:SetModel("models/props_doors/doormainmetal01_dm08_f.mdl")
 	enttemp6:SetAngles(ang)
 	enttemp6:SetPos(self:GetPos() )
+	enttemp6:SetCollisionGroup(COLLISION_GROUP_DEBRIS)
 	enttemp6:Spawn()
 	enttemp6:GetPhysicsObject():SetVelocity(vec*200)
 	constraint.NoCollide(enttemp6, self, 0, 0)
 	enttemp7:SetModel("models/props_doors/doormainmetal01_dm08_g.mdl")
 	enttemp7:SetAngles(ang)
 	enttemp7:SetPos(self:GetPos() )
+	enttemp7:SetCollisionGroup(COLLISION_GROUP_DEBRIS)
 	enttemp7:Spawn()
 	enttemp7:GetPhysicsObject():SetVelocity(vec*200)
 	constraint.NoCollide(enttemp7, self, 0, 0)
 	enttemp8:SetModel("models/props_doors/doormainmetal01_dm08_h.mdl")
 	enttemp8:SetAngles(ang)
 	enttemp8:SetPos(self:GetPos() )
+	enttemp8:SetCollisionGroup(COLLISION_GROUP_DEBRIS)
 	enttemp8:Spawn()
 	enttemp8:GetPhysicsObject():SetVelocity(vec*200)
 	constraint.NoCollide(enttemp8, self, 0, 0)
@@ -335,19 +357,38 @@ function ENT:MetalDoorOnTakeDamage(damage )
 		if self.cent == 2 then self:MetalDoorState3(vec) end
 		if self.cent == 1 then self:MetalDoorState2(vec) end
 		if self.life < 50 then self:MetalDoorState1(vec) end
+		if IsValid(self) then 
+			self:SetSolid(SOLID_VPHYSICS)
+			self:PhysicsInitShadow()
+			timer.Simple(0.1, function()
+			net.Start("shl_entityupdate") net.WriteEntity(self) net.Broadcast() end)
+		end
 	end
 end
 
-function ENT:MetalDoorInitialize()
-	self.life = 800
-	self.cent = math.floor(self.life/100)
-
+function ENT:WoodenDoorOnTakeDamage(damage ) 
+	local damageAmount = damage:GetDamage()
+	self.life = self.life - damageAmount
+	local vec;
+	if IsValid(damage:GetAttacker()) and damage:GetAttacker():IsPlayer() then
+		vec = damage:GetAttacker():GetAimVector()
+	else
+		vec = Vector(0,0,0)
+	end
+	if self.cent > math.floor(self.life/100) then
+		self.cent = math.floor(self.life/100)
+		if self.cent == 3 then self:WoodenDoorState4(vec) end
+		if self.cent == 2 then self:WoodenDoorState3(vec) end
+		if self.cent == 1 then self:WoodenDoorState2(vec) end
+		if self.life < 50 then self:WoodenDoorState1(vec) end
+		if IsValid(self) then
+			self:SetSolid(SOLID_VPHYSICS)
+			self:PhysicsInitShadow()
+			timer.Simple(0.1, function()
+			net.Start("shl_entityupdate") net.WriteEntity(self) net.Broadcast() end)
+		end
+	end
 end
-
-
-
-
-
 
 
 local function prepareWooden(ent)
@@ -365,6 +406,7 @@ function SLASHERS.handledoors()
 	for k, v in pairs(hook.GetTable()["EntityTakeDamage"]) do
 		hook.Remove("EntityTakeDamage", k)
 	end
+
 
 	for k, v in pairs(ents.GetAll()) do
 		if v:GetClass() == "prop_door_rotating" then

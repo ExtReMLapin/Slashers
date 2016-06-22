@@ -12,7 +12,7 @@ AddCSLuaFile("client/network.lua");
 util.AddNetworkString("shl_firstspawn")
 util.AddNetworkString("shl_flashlight")
 
-GAME_LUM = "f"
+GAME_LUM = "g"
 
 pjs = pjs or {};
 

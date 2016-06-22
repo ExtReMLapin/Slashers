@@ -34,3 +34,10 @@ net.Receive("shl_flashlight",function()
 		end
 	end
 end)
+
+
+net.Receive("shl_entityupdate",function ()
+	local ent = net.ReadEntity()
+	ent:SetSolid(SOLID_VPHYSICS)
+	ent:PhysicsInitShadow()
+end)
