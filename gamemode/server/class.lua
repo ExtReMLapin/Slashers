@@ -86,7 +86,6 @@ end
 function SLASHERS.SetUpClasses(killer)
 	tmptbl2 = table.Copy(tmptbl1)
 	for k,ply in pairs(SLASHERS.ROUND.Survivors) do
-		PrintTable(tmptbl2)
 		if #tmptbl2 == 0 or not tmptbl2 then
 			print("max classes") 
 			ply:SetClass(table.Random(tmptbl1))

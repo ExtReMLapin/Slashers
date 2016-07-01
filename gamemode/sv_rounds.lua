@@ -76,7 +76,6 @@ function SLASHERS.ROUND.NewRound()
 		timer.Simple(SLASHERS.ROUND.BreakTime, function()
 			if table.Count(player.GetAll()) >= 3 then
 				SLASHERS.IsRoundBreak = false;
-				print("sent")
 				engine.LightStyle(0,GAME_LUM)
 				timer.Simple(0.1,function()
 					net.Start("shl_startround")
@@ -91,7 +90,6 @@ function SLASHERS.ROUND.NewRound()
 				timer.Create("WaitForPlayer", 1, 0, function()
 					if table.Count(player.GetAll()) >= 3 then
 						SLASHERS.IsRoundBreak = false;
-						print("sent")
 						engine.LightStyle(0,GAME_LUM)
 						timer.Remove("WaitForPlayer")
 						timer.Simple(0.1,function()
@@ -126,22 +124,24 @@ function GM:PlayerSpawn(Player)
 
 end
 
-function GM:PlayerDK(ply, reason) -- Disconnect Killed
+function GM:PlayerDK(ply, reason) -- Disconnected/Killed
 	if !ply:Alive() and pjs[ ply ] then RemoveProjectedTexture( ply ); end
 	ply:AllowFlashlight( false )
 
-	if not SLASHERS.IsRoundActive then print("not active") return end
+	if not SLASHERS.IsRoundActive then print("no active round but died") return end
 	if ply:Team() == TEAM_SURVIVORS then
 		for k, v in pairs(SLASHERS.ROUND.Survivors) do
 			if v == ply then
-				print("killed one survivor")
+				print("killed one survivor : " .. ply:Nick())
 				SLASHERS.ROUND.Survivors[k] = nil
 			end
 		end
 	else
+		print("player " .. ply:Nick() .. " with team " .. tostring(ply:Team()) .. " Died/Disconnected")
 		SLASHERS.ROUND.End(3);
+		return
 	end
-	print("left survivors", table.Count(SLASHERS.ROUND.Survivors))
+	print("left survivors : ", table.Count(SLASHERS.ROUND.Survivors))
 	if table.Count(SLASHERS.ROUND.Survivors) == 0 then
 		print("no more survivors")
 		SLASHERS.ROUND.End(1)

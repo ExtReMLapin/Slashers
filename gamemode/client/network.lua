@@ -1,18 +1,18 @@
 net.Receive("shl_startround",function ()
 	render.RedownloadAllLightmaps()
-	print("Start of round")
+	print("[CS]Start of round")
 end)
 
 net.Receive("shl_endround",function ()
-	print("End of round")
+	print("[CS]End of round")
 end)
 
 net.Receive("shl_warmupstart",function ()
-	print("Warmup start")
+	print("[CS]Warmup start")
 end)
 
 net.Receive("shl_waitingplayers",function ()
-	print("Waiting for players")
+	print("[CS]Waiting for players")
 end)
 
 

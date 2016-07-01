@@ -3,11 +3,7 @@ local mat_ColorMod = Material( "pp/colour" )
 
 mat_ColorMod:SetTexture( "$fbtexture", render.GetScreenEffectTexture() )
 
-
 local tab = {}
-	
-
-
 
 function DrawColorModify( tab )
 
